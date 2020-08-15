@@ -5,7 +5,7 @@ class MQTTClientFactory:
         pass
 
     @classmethod
-    def get_mqtt_client(self, client_id: str= None) -> Client:
+    def get_mqtt_client(self, client_id: str) -> Client:
         """
         Returns an MQTT client for a given client ID
 

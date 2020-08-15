@@ -1,7 +1,6 @@
 import logging
 import logging.config
 import time
-import sys
 
 from factory.mqtt import MQTTClientFactory
 from services.mqtt import MQTTMessageService
@@ -16,7 +15,7 @@ def run():
     logger.info(" #                                                # ")
     logger.info(" ################################################## ")
 
-    mqtt_client = MQTTClientFactory.get_mqtt_client("my_plant_watering_app")
+    mqtt_client = MQTTClientFactory.get_mqtt_client("plant_water")
     mqtt_service = MQTTMessageService(mqtt_client)
 
     while True:
