@@ -2,7 +2,7 @@ import logging
 import os
 
 from paho.mqtt.client import Client, MQTTMessage, MQTTMessageInfo # type: ignore
-from typing import Callable, Any
+from typing import Callable, Any, Dict
 from plant_water.config import Config
 
 class MQTTMessageService:
@@ -15,7 +15,7 @@ class MQTTMessageService:
         self.running = False
         self.client = mqtt_client
         self.client.on_connect=self._on_connect
-        self.subscriptions = {}
+        self.subscriptions: Dict[str, Callable] = {}
 
     def start(self) ->  None:
         """
@@ -74,7 +74,7 @@ class MQTTMessageService:
         Publish a message onto a given topic.
 
         Parameters:
-            topic: The topic name to publish a message to.
+            topic:   The topic name to publish a message to.
             message: The message that will be published to the MQTT broker.
         """
         self.logger.debug(f"Publishing message {message} on topic {topic}")
