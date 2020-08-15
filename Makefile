@@ -8,4 +8,5 @@ down:
 	@docker-compose down
 
 test:
+	@mypy src/
 	@pytest
