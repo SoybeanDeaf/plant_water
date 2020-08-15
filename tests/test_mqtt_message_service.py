@@ -71,7 +71,6 @@ class TestMQTTMessageService:
         verify(self.client, times=0).loop_start()
         verify(self.client, times=0).connect()
 
-
     def test_subscribes_to_topic_and_adds_callback(self):
         mock_callback = mock()
         expect(self.client, times=1).subscribe("my_topic")
@@ -79,15 +78,35 @@ class TestMQTTMessageService:
         self.service.subscribe("my_topic", mock_callback)
         verify(self.client, times=1).subscribe("my_topic")
         verify(self.client, times=1).message_callback_add("my_topic", mock_callback)
+        assert self.service.subscriptions == { "my_topic": mock_callback }
 
     def test_unsubscribes_to_topic_and_removes_callback(self):
         expect(self.client, times=1).unsubscribe("my_topic")
         expect(self.client, times=1).message_callback_remove("my_topic")
+        self.service.subscriptions = { "my_topic": mock() }
         self.service.unsubscribe("my_topic")
         verify(self.client, times=1).unsubscribe("my_topic")
         verify(self.client, times=1).message_callback_remove("my_topic")
+        assert self.service.subscriptions == {}
 
     def test_publishes_message_with_correct_topic(self):
         expect(self.client, times=1).publish(topic="topic", payload="message")
         self.service.publish("topic", "message")
         verify(self.client, times=1).publish(topic="topic", payload="message")
+
+    def test_callback_and_subscription_wont_be_added_if_already_exists(self):
+        mock_callback = mock()
+        expect(self.client, times=0).subscribe("my_topic")
+        expect(self.client, times=0).message_callback_add("my_topic", mock_callback)
+        self.service.subscriptions = { "my_topic": mock() }
+        self.service.subscribe("my_topic", mock_callback)
+        verify(self.client, times=0).subscribe("my_topic")
+        verify(self.client, times=0).message_callback_add("my_topic", mock_callback)
+
+    def test_callback_and_subscription_wont_be_removed_if_does_not_exist(self):
+        expect(self.client, times=0).unsubscribe("my_topic")
+        expect(self.client, times=0).message_callback_remove("my_topic")
+        self.service.subscriptions = {}
+        self.service.unsubscribe("my_topic")
+        verify(self.client, times=0).unsubscribe("my_topic")
+        verify(self.client, times=0).message_callback_remove("my_topic")

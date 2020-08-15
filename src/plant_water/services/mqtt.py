@@ -13,9 +13,9 @@ class MQTTMessageService:
     def __init__(self, mqtt_client: Client):
         self.logger = logging.getLogger(__name__)
         self.running = False
-
         self.client = mqtt_client
         self.client.on_connect=self._on_connect
+        self.subscriptions = {}
 
     def start(self) ->  None:
         """
@@ -25,6 +25,7 @@ class MQTTMessageService:
             self.client.loop_start()
             self.client.connect(host=Config.MQTT.BROKER, port=Config.MQTT.PORT, keepalive=Config.MQTT.KEEP_ALIVE)
             self.running = True
+            self.subscriptions = {}
 
     def stop(self) ->  None:
         """
@@ -34,6 +35,7 @@ class MQTTMessageService:
             self.client.loop_stop()
             self.client.disconnect()
             self.running = False
+            self.subscriptions = {}
 
     def subscribe(self, topic: str, handler: Callable[[Client, Any, MQTTMessage], Any]) -> None:
         """
@@ -43,9 +45,14 @@ class MQTTMessageService:
             topic:   The topic name to subscribe to.
             handler: A callback function to be executed when a message is received for this topic.
         """
-        self.logger.debug(f"Subscribing to topic {topic}")
-        self.client.subscribe(topic)
-        self.client.message_callback_add(topic, handler)
+
+        if topic not in self.subscriptions:
+            self.logger.debug(f"Subscribing to topic {topic}")
+            self.subscriptions[topic] = handler
+            self.client.subscribe(topic)
+            self.client.message_callback_add(topic, handler)
+        else:
+            self.logger.warning("Attempted to subscribe to a topic already subscribed to")
 
     def unsubscribe(self, topic: str) -> None:
         """
@@ -54,9 +61,13 @@ class MQTTMessageService:
         Parameters:
             topic: The topic name to stop receiving messages for.
         """
-        self.logger.debug(f"Unsubscribing to topic {topic}")
-        self.client.unsubscribe(topic)
-        self.client.message_callback_remove(topic)
+        if topic in self.subscriptions:
+            self.logger.debug(f"Unsubscribing to topic {topic}")
+            self.subscriptions.pop(topic)
+            self.client.unsubscribe(topic)
+            self.client.message_callback_remove(topic)
+        else:
+            self.logger.warning("Attempted to unsubscribe from a topic not subscribed to")
 
     def publish(self, topic: str, message: str) -> MQTTMessageInfo:
         """
