@@ -1,0 +1,18 @@
+version: '3'
+services:
+  app:
+    container_name: plant_water
+    image: plant_water
+    build: .
+    volumes:
+      - "./src:/app"
+    depends_on:
+      - mosquitto
+    environment:
+    - PYTHONUNBUFFERED=1
+
+  mosquitto:
+    container_name: mqtt
+    image: "eclipse-mosquitto:latest"
+    ports:
+      - 1883:1883
