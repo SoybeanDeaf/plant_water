@@ -2,8 +2,8 @@ import logging
 import logging.config
 import time
 
-from factory.mqtt import MQTTClientFactory
-from services.mqtt import MQTTMessageService
+from plant_water.factory.mqtt import MQTTClientFactory
+from plant_water.services.mqtt import MQTTMessageService
 
 logging.config.fileConfig("resources/logging.conf")
 logger = logging.getLogger("plant_watering")
@@ -17,6 +17,7 @@ def run():
 
     mqtt_client = MQTTClientFactory.get_mqtt_client("plant_water")
     mqtt_service = MQTTMessageService(mqtt_client)
+    mqtt_service.start()
 
     while True:
         time.sleep(1)

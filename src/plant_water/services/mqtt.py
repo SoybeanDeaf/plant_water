@@ -1,9 +1,9 @@
 import logging
 import os
 
-from typing import Callable, Any
-from config import Config
 from paho.mqtt.client import Client, MQTTMessage, MQTTMessageInfo # type: ignore
+from typing import Callable, Any
+from plant_water.config import Config
 
 class MQTTMessageService:
     """
@@ -11,12 +11,11 @@ class MQTTMessageService:
     """
 
     def __init__(self, mqtt_client: Client):
-        self.logger = logging.getLogger("plant_watering.services.MQTTMessageService")
+        self.logger = logging.getLogger(__name__)
         self.running = False
 
         self.client = mqtt_client
         self.client.on_connect=self._on_connect
-        self.start()
 
     def start(self) ->  None:
         """
