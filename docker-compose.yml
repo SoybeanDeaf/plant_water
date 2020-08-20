@@ -5,13 +5,14 @@ services:
     image: plant_water
     build: .
     volumes:
-      - "./src:/app"
+      - ".:/app"
     depends_on:
       - mosquitto
     environment:
     - PYTHONUNBUFFERED=1
     - MQTT_BROKER=mosquitto
     - MQTT_PORT=1883
+    command: python /app/src/app.py
 
   mosquitto:
     container_name: mqtt

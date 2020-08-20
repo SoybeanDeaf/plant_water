@@ -23,4 +23,4 @@ class Plant:
     def time_since_watered(self) -> timedelta:
         if self.last_watered:
             return datetime.now() - self.last_watered
-        return self.planted_on
+        return datetime.now() - self.planted_on

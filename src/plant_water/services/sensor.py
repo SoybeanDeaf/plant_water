@@ -1,8 +1,8 @@
 from paho.mqtt.client import Client, MQTTMessage # type: ignore
 from typing import Any, List
 
-from plant_water.model.sensor import Sensor
-from .mqtt import MQTTMessageService
+from plant_water.models.sensor import Sensor
+from plant_water.services.mqtt import MQTTMessageService
 
 class SensorService:
     def __init__(self, mqtt_message_service: MQTTMessageService):

@@ -3,7 +3,7 @@ import os
 
 from paho.mqtt.client import Client, MQTTMessage, MQTTMessageInfo # type: ignore
 from typing import Callable, Any, Dict
-from plant_water.config import Config
+from config import Config
 
 class MQTTMessageService:
     """

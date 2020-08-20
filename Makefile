@@ -7,6 +7,6 @@ up:
 down:
 	@docker-compose down
 
-test:
+test: up
 	@mypy src/
-	@pytest
+	@docker exec -it plant_water pytest

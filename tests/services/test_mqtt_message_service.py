@@ -1,7 +1,7 @@
 import pytest
 
 from plant_water.services.mqtt import MQTTMessageService
-from plant_water.config import Config
+from config import Config
 from mockito import mock, when, expect, verify, unstub
 
 

@@ -1,11 +1,12 @@
 import logging
 import logging.config
 import time
+import os
 
 from plant_water.factory.mqtt import MQTTClientFactory
 from plant_water.services.mqtt import MQTTMessageService
 
-logging.config.fileConfig("resources/logging.conf")
+logging.config.fileConfig("./src/resources/logging.conf")
 logger = logging.getLogger("plant_watering")
 
 def run():

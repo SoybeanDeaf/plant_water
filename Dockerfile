@@ -1,9 +1,9 @@
 FROM python:3.8
+
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+
+ADD . /app
 WORKDIR /app
 
-COPY setup.py .
-COPY src/ .
-
-RUN pip install .
-
-CMD ["python", "./plant_water/app.py"]
+CMD ["python", "/app/src/app.py"]
