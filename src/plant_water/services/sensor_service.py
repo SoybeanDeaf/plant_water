@@ -20,17 +20,18 @@ class SensorService:
         self.mqtt_message_service.subscribe(topic="sensor/moisture/#",
                                             handler=self._handle_moisture_reading)
 
-
     def _handle_moisture_reading(self, client: Client, userinfo: str, msg: MQTTMessage) -> None:
+        self.logger.debug("Received moisture reading message")
         try:
             payload = json.loads(msg.payload)
             moisture_level = payload.get("moisture_level")
 
             self.update_last_sensor_received_time(payload)
             self.save_reading_to_db(payload)
+
             if moisture_level == 0.0 or moisture_level == 100.0:
                 self.send_email_alert(f"Unexpected moisture level {int(moisture_level)}% detected")
-            elif self.plant_watering_threshold and moisture_level <= self.plant_watering_threshold:
+            elif moisture_level <= self.plant_watering_threshold:
                 self.water_plant()
         except ValueError:
             self.logger.exception("Error reading moisture reading")
@@ -42,12 +43,15 @@ class SensorService:
         self.last_received_sensor_reading = datetime.fromisoformat(msg_payload.get("measured_at"))
 
     def save_reading_to_db(self, msg_payload) -> None:
+        self.logger.debug("Saving moisture reading to DB")
         connection = self._get_db_connection()
         connection.cursor().execute(f"INSERT INTO moisture_reading VALUES ({msg_payload.get('moisture_level')}, '{msg_payload.get('measured_at')}')")
         connection.commit()
 
     def send_email_alert(self, alert_content) -> None:
+        self.logger.debug("Sending email alert")
         self.mqtt_message_service.publish("alert/email", alert_content)
 
     def water_plant(self) -> None:
+        self.logger.debug("Creating water plant request")
         self.mqtt_message_service.publish("event/water_plant", None)

@@ -1,5 +1,6 @@
 import logging
 import os
+import time
 
 from paho.mqtt.client import Client, MQTTMessage, MQTTMessageInfo # type: ignore
 from typing import Callable, Any, Dict, Optional
@@ -15,7 +16,7 @@ class MQTTMessageService:
         self.logger = logging.getLogger(__name__)
         self.running = False
         self.client = mqtt_client
-        self.client.on_connect=self._on_connect
+        self.client.on_connect = self._on_connect
         self.subscriptions: Dict[str, Callable] = {}
 
     def start(self) ->  None:
@@ -23,10 +24,11 @@ class MQTTMessageService:
         Start the MQTT client loop and begin handling messages
         """
         if not self.running:
-            self.client.loop_start()
             self.client.connect(host=Config.MQTT.BROKER, port=Config.MQTT.PORT, keepalive=Config.MQTT.KEEP_ALIVE)
+            self.client.loop_start()
             self.running = True
             self.subscriptions = {}
+            
 
     def stop(self) ->  None:
         """

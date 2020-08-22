@@ -14,17 +14,16 @@ logger = logging.getLogger("plant_watering")
 
 def run():
     logger.info("Starting app...")
-    mqtt_client = MQTTClientFactory.get_mqtt_client("plant_water")
-    mqtt_service = MQTTMessageService(mqtt_client)
+
+    mqtt_client    = MQTTClientFactory.get_mqtt_client("plant_water")
+    mqtt_service   = MQTTMessageService(mqtt_client)
     sensor_service = SensorService(mqtt_service)
 
     mqtt_service.start()
-    time.sleep(1)
     sensor_service.start()
 
     while True:
         time.sleep(0.1)
-        pass
 
 if __name__ == "__main__":
     run()
