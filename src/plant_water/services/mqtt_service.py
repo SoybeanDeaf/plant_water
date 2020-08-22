@@ -48,8 +48,6 @@ class MQTTMessageService:
             topic:   The topic name to subscribe to.
             handler: A callback function to be executed when a message is received for this topic.
         """
-
-
         if topic not in self.subscriptions:
             self.logger.debug(f"Subscribing to topic {topic}")
             self.subscriptions[topic] = handler

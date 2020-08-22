@@ -28,7 +28,6 @@ class SensorService:
 
             self.update_last_sensor_received_time(payload)
             self.save_reading_to_db(payload)
-
             if moisture_level == 0.0 or moisture_level == 100.0:
                 self.send_email_alert(f"Unexpected moisture level {int(moisture_level)}% detected")
             elif moisture_level <= self.plant_watering_threshold:
