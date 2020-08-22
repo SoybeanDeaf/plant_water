@@ -1,16 +1,16 @@
 version: 2.1
-
 jobs:
-  build-and-test:
+  build:
+    machine:
+      image: cimg/base:2020.01
+
     steps:
       - checkout
 
-      - setup_remote_docker
-      
       - run:
-          command: make build
           name: Build project
+          command: make build
 
       - run:
-          command: make test
           name: Run tests
+          command: make test
