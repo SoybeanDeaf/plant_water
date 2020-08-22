@@ -1,6 +1,6 @@
 import pytest
 
-from plant_water.services.mqtt import MQTTMessageService
+from plant_water.services.mqtt_service import MQTTMessageService
 from config import Config
 from mockito import mock, when, expect, verify, unstub
 
@@ -74,10 +74,10 @@ class TestMQTTMessageService:
     def test_subscribes_to_topic_and_adds_callback(self):
         mock_callback = mock()
         expect(self.client, times=1).subscribe("my_topic")
-        expect(self.client, times=1).message_callback_add("my_topic", mock_callback)
+        expect(self.client, times=1).message_callback_add("my_topic", any)
         self.service.subscribe("my_topic", mock_callback)
         verify(self.client, times=1).subscribe("my_topic")
-        verify(self.client, times=1).message_callback_add("my_topic", mock_callback)
+        verify(self.client, times=1).message_callback_add("my_topic", any)
         assert self.service.subscriptions == { "my_topic": mock_callback }
 
     def test_unsubscribes_to_topic_and_removes_callback(self):

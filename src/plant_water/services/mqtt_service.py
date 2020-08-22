@@ -2,8 +2,9 @@ import logging
 import os
 
 from paho.mqtt.client import Client, MQTTMessage, MQTTMessageInfo # type: ignore
-from typing import Callable, Any, Dict
+from typing import Callable, Any, Dict, Optional
 from config import Config
+from datetime import datetime
 
 class MQTTMessageService:
     """
@@ -37,7 +38,7 @@ class MQTTMessageService:
             self.running = False
             self.subscriptions = {}
 
-    def subscribe(self, topic: str, handler: Callable[[Client, Any, MQTTMessage], Any]) -> None:
+    def subscribe(self, topic: str, handler: Callable[[Client, Any, bytes], Any]) -> None:
         """
         Subscribe to a given topic. When a message is received for the topic, the provided handler will be called.
 
@@ -45,6 +46,7 @@ class MQTTMessageService:
             topic:   The topic name to subscribe to.
             handler: A callback function to be executed when a message is received for this topic.
         """
+
 
         if topic not in self.subscriptions:
             self.logger.debug(f"Subscribing to topic {topic}")
@@ -69,7 +71,7 @@ class MQTTMessageService:
         else:
             self.logger.warning("Attempted to unsubscribe from a topic not subscribed to")
 
-    def publish(self, topic: str, message: str) -> MQTTMessageInfo:
+    def publish(self, topic: str, message: Optional[str]) -> MQTTMessageInfo:
         """
         Publish a message onto a given topic.
 
