@@ -1,0 +1,16 @@
+version: 2.1
+
+jobs:
+  build-and-test:
+    steps:
+      - checkout
+
+      - setup_remote_docker
+      
+      - run:
+          command: make build
+          name: Build project
+
+      - run:
+          command: make test
+          name: Run tests
