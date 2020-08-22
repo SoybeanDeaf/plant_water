@@ -1,9 +1,6 @@
 from paho.mqtt.client import Client # type: ignore
 
 class MQTTClientFactory:
-    def __init__(self):
-        pass
-
     @classmethod
     def get_mqtt_client(self, client_id: str) -> Client:
         """

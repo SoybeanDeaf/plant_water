@@ -1,3 +1,6 @@
+# Coverage report
+reports/
+
 # SQLite3 databases
 *.db
 
