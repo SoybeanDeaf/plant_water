@@ -13,8 +13,8 @@ class TestSensorService:
         self.mock_mqtt_service  = mock()
         self.mock_db_connection = mock()
         self.mock_db_cursor     = mock()
-        self.service = SensorService(mqtt_message_service=self.mock_mqtt_service,
-                                     db_connection=self.mock_db_connection)
+        self.service = SensorService(mqtt_message_service=self.mock_mqtt_service)
+        when(self.service)._get_db_connection().thenReturn(self.mock_db_connection)
         when(self.mock_db_connection).cursor().thenReturn(self.mock_db_cursor)
 
     @classmethod

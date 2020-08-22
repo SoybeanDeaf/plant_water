@@ -16,10 +16,11 @@ def run():
     logger.info("Starting app...")
     mqtt_client = MQTTClientFactory.get_mqtt_client("plant_water")
     mqtt_service = MQTTMessageService(mqtt_client)
-    sensor_service = SensorService(mqtt_service, sqlite3.connect(Config.Database.DATABASE_NAME))
+    sensor_service = SensorService(mqtt_service)
 
-    sensor_service.start()
     mqtt_service.start()
+    time.sleep(1)
+    sensor_service.start()
 
     while True:
         time.sleep(0.1)
